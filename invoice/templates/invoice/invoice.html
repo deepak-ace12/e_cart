@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block body %}
+<html>
+<head>
+    <title>A simple, clean, and responsive HTML invoice template</title>
+
+    <style>
+    .invoice-box{
+        max-width:600px;
+        margin:auto;
+        padding:60px;
+        border:1px solid #eee;
+        box-shadow:0 0 10px rgba(0, 0, 0, .15);
+        font-size:12px;
+        line-height:18px;
+        font-family: Arial;
+        color:#555;
+    }
+
+    .invoice-box table{
+        width:100%;
+        line-height:inherit;
+        text-align:left;
+
+
+
+    }
+
+    .invoice-box table td{
+        padding:0px;
+        vertical-align:top;
+    }
+
+  .invoice-box table th{
+        font-size:12px;
+    }
+
+
+    .invoice-box table tr.top table td{
+        padding-bottom:20px;
+    }
+
+    .invoice-box table tr.top table td.title{
+        font-size:45px;
+        line-height:45px;
+        color:#333;
+    }
+
+    .invoice-box table tr.information table td{
+        padding-bottom:0px;
+    }
+
+    .invoice-box table tr.heading td{
+
+  padding-top : 20px;
+  padding-right:20px;
+        font-weight:bold;
+  color:#2A3990;
+  font-size:10px;
+    }
+ .invoice-box table tr.heading th{
+
+  padding-top : 20px;
+  padding-right:20px;
+        border-top:2px solid #ddd;
+        font-weight:bold;
+  color:#2A3990;
+  font-size:12px;
+    }
+ .even-odd tr:nth-child(even)
+ {
+ background-color: #f2f2f2
+ }
+
+    .invoice-box table tr.details td{
+        padding-bottom:20px;
+    }
+
+    .invoice-box table tr.item.last td{
+        border-bottom:none;
+    }
+
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td{
+            width:100%;
+            display:block;
+            text-align:center;
+        }
+
+        .invoice-box table tr.information table td{
+            width:100%;
+            display:block;
+            text-align:center;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <h3 style="color:#6D64E8">{{ invoice.company.company_name }}</h3>
+                                <h5>{{ invoice.company.street }}<br>
+                                {{ invoice.company.city}} &nbsp, {{ invoice.company.state_code}}<br>
+                                {{ invoice.company.contact}} </h5>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <h1  style="color:#283592"><b>Invoice</b></h1>
+                                <h4 style="color:#E01B84"><b>Submitted on {{ invoice.submitted }}</b></h4>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                           <th>Invoice for</th>
+                           <th>Payable to</th>
+                           <th>Invoice # </th>
+                        </tr>
+                        <tr>
+                            <td>{{ invoice.customer.get_full_name }}</td>
+                            <td>{{ invoice.customer.get_full_name }}</td>
+                            <td>{{ invoice.id }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ invoice.company.company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ invoice.company.street }}</td>
+                            <th><b>Project</b></th>
+                            <th><b>Due Date</b></th>
+                        </tr>
+                        <tr>
+                            <td> {{ invoice.company.state_code}}</td>
+                            <td> {{ invoice.project.project_name}}</td>
+                            <td> {{ invoice.due_date }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table class="even-odd">
+            <tr class="heading">
+                <th>Description </th>
+                <th> Qty</th>
+                <th> Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+            {% for cart in invoice.cart.all %}
+            <tr class="item">
+                <td>{{cart.item_name}}</td>
+                <td>1</td>
+                <td>{{cart.unit_price}}</td>
+                 <td>$100</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+<a href="{% url 'invoice:save_pdf' %}">
+     <button type="button" class="btn btn-success btn-xs">save pdf</button></a>
+{% endblock %}
+
+

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container" >
+     {% for company in companies %}
+    <div class="col-md-4" align="middle">
+
+        {% if company.image %}
+        <img src="{{ company.image.url }}"   align="middle" class="img-round"
+             width="200" height="200">
+         <h3><a href="{% url 'project:view_projects' pk=company.pk %}" >
+             {{ company.company_name }}</a>
+         </h3>
+        {% endif %}
+
+
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
