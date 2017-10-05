@@ -6,12 +6,12 @@ from django.contrib.auth.models import User
 
 
 class Invoice(models.Model):
-    customer = models.ForeignKey(User)
+    customer = models.ForeignKey(User, null=True)
     company = models.ForeignKey(Company, null=True)
     project = models.ForeignKey(Project, null=True)
     items = models.ManyToManyField(Item)
     submitted = models.DateTimeField(auto_now_add=True)
-    due_date = models.DateTimeField()
+    due_date = models.DateTimeField(null=True)
     cart = models.ManyToManyField(Item, related_name='cart')
 
     @classmethod
@@ -29,3 +29,7 @@ class Invoice(models.Model):
         project_cart.cart.remove(current_item)
 
 
+class Quantity(models.Model):
+    invoice = models.ForeignKey(Invoice, related_name='invoice', null=True)
+    item = models.ForeignKey(Item, related_name='item')
+    quantity = models.IntegerField(default=1)

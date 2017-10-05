@@ -15,7 +15,7 @@ class Item(models.Model):
 class Project(models.Model):
     project_name = models.CharField(max_length=20, default='')
     company = models.ForeignKey(Company)
-    products = models.ManyToManyField(Item, related_name='item')
+    products = models.ManyToManyField(Item, related_name='items')
 
     def __str__(self):
         return self.project_name

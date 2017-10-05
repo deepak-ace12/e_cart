@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<head>
+<style>
+table td{
+ font-weight: bold;
+ }
+ </style>
+</head>
+<body>
+<div class="w3-container">
+
+  <table class="w3-table-all">
+        <thead>
+            <tr class="w3-green">
+                <th></th>
+                <th>Item Name</th>
+                <th>Unit price</th>
+                <th>Qty</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        {% for cart in invoice.cart.all %}
+        <tr>
+            <td>{% if cart.image %}
+                <img src="{{ cart.image.url }}"   align="middle" class="img-round"
+                     width="90" height="60">
+                {% endif %}</td>
+            <td>{{ cart.item_name }}</td>
+            <td>${{cart.unit_price}}</td>
+            <td><form method="post" id="qty">
+            {% csrf_token %}
+                <input type="number" name="qty" value="1" min="1" style="width:12%"></form></td>
+            <td>$200</td>
+        </tr>
+      {% endfor %}
+
+  </table>
+</div>
+</body>
+</html>
+</div>
+{% endblock %}
