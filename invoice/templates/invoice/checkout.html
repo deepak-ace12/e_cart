@@ -34,16 +34,30 @@ table td{
                 {% endif %}</td>
             <td>{{ cart.item_name }}</td>
             <td>${{cart.unit_price}}</td>
-            <td><form method="post" id="qty">
+            <td> <form method="post">
             {% csrf_token %}
-                <input type="number" name="qty" value="1" min="1" style="width:12%"></form></td>
-            <td>$200</td>
+            {{ form.as_p }}
+            <button class="btn btn-info btn-xs"  type="submit">Submit</button>
+        </form></td>
+            <td></td>
         </tr>
       {% endfor %}
 
   </table>
 </div>
+    <div>
+        <a href="{% url 'invoice:adjust' pk=invoice.pk %}">
+            <button type="button" style=" position: absolute; bottom: 10%;" class="btn btn-danger btn-xs" >
+            Add Adjustment</button></a>
+        <a href="{% url 'invoice:view_invoice' pk=invoice.pk %}">
+           <button type="button" class="btn btn-success btn-xs" style=" position: absolute; bottom: 10%; right: 10%">
+               Create Invoice</button></a>
+
+    </div>
 </body>
 </html>
+
+
 </div>
+
 {% endblock %}

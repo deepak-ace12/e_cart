@@ -1,16 +1,27 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from project.models import Item, Project
-from .models import Invoice
+from .models import Invoice, Quantity, Adjustment
 from reportlab.pdfgen import canvas
 from django.template.loader import get_template
 from django.http import HttpResponse
-from django.views.generic import View
 from .utils import render_to_pdf
-from .forms import QuantityForm
+from .forms import QuantityForm, AdjustmentForm
+from company.models import AdminProfile
 
 
-def view_invoice(request):
-    return render(request, 'invoice/invoice.html')
+def view_invoice(request, pk=None):
+    if pk:
+        invoice = Invoice.objects.get(pk=pk)
+    else:
+        invoice = request.invoice
+    user = AdminProfile.objects.get(user=request.user)
+    quantity, created = Quantity.objects.get_or_create(invoice_id=pk)
+    adjustment = Adjustment.objects.get(invoice_id=pk)
+
+    args = {'invoice': invoice, 'user': user, 'quantity': quantity,
+            'adjustment': adjustment,
+            }
+    return render(request, 'invoice/invoice.html', args)
 
 
 def cart(request, action, pk):
@@ -27,22 +38,24 @@ def cart(request, action, pk):
     )
     carts = invoice.cart.all()
     project = Project.objects.get(pk=item.project.pk)
-    args = {'items': items, 'carts': carts, 'project': project, }
+    args = {'items': items, 'carts': carts, 'project': project, 'invoice': invoice}
     return render(request, 'project/items.html', args)
 
 
 def checkout(request, pk=None):
     if pk:
-        invoice, created = Invoice.objects.get_or_create(project_id=pk, customer=request.user)
+        invoice = Invoice.objects.get(pk=pk)
     else:
         invoice = request.invoice
-    args = {'invoice': invoice, }
+    args = {'invoice': invoice}
     return render(request, 'invoice/checkout.html', args)
 
 
-def generate_pdf(request):
-
-    invoice, created = Invoice.objects.get_or_create(customer=request.user)
+def generate_pdf(request, pk=None):
+    if pk:
+        invoice = Invoice.objects.get(pk=pk)
+    else:
+        invoice = request.invoice
     template = get_template('invoice/invoice.html')
     context = {
         'invoice': invoice,
@@ -79,18 +92,44 @@ def save_pdf(request):
     p.save()
     return response
 
-def save_qty(request):
-    if request.method == 'POST':
 
-        form = QuantityForm(request.POST)
-        if form.is_valid():
-
-            form.save()
-            return HttpResponse("Some HTML code")
-
+def save_qty(request, pk=None):
+    invoice = Invoice.objects.get(pk=pk)
+    if pk:
+        qty, created = Quantity.objects.get_or_create(invoice=invoice)
     else:
-        form = QuantityForm()
+        qty = request.invoice
 
-    #This called when we need to display the form: get or error in form fields
-    return render('invoice/example.html', {'form': form})
+    if request.method == 'POST':
+        form = QuantityForm(request.POST, instance=qty)
+        args = {'form': form, 'invoice': invoice}
+        if form.is_valid():
+            form.save()
+        return render(request, 'invoice/checkout.html', args)
+    else:
+        invoice = Invoice.objects.get(pk=pk)
+        qty, created = Quantity.objects.get_or_create(invoice=invoice)
+        form = QuantityForm(instance=qty)
+        args = {'form': form, 'invoice': invoice}
+        return render(request, 'invoice/checkout.html', args)
 
+
+def adjustment(request, pk=None):
+    invoice = Invoice.objects.get(pk=pk)
+    if pk:
+        amt, created = Adjustment.objects.get_or_create(invoice=invoice)
+    else:
+        amt = request.invoice
+
+    if request.method == 'POST':
+        form = AdjustmentForm(request.POST, instance=amt)
+        args = {'form': form, 'invoice': invoice}
+        if form.is_valid():
+            form.save()
+        return render(request, 'invoice/checkout.html', args)
+    else:
+        invoice = Invoice.objects.get(pk=pk)
+        amt, created = Adjustment.objects.get_or_create(invoice=invoice)
+        form = AdjustmentForm(instance=amt)
+        args = {'form': form, 'invoice': invoice}
+        return render(request, 'invoice/adjustment.html', args)

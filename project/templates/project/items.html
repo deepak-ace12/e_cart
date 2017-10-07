@@ -20,15 +20,13 @@
               {% else %}
               <tr>
                   <a href="{% url 'invoice:cart' action='add' pk=item.pk %}">
-                      <button type="button" class="btn btn-success btn-xs">Add to Cart</button></a>
+                     <button type="button" class="btn btn-success btn-xs">Add to Cart</button></a>
               </tr>
               {% endif %}
           </table>
      </div>
      {% endfor %}
-<a href="{% url 'invoice:checkout' pk=project.pk %}">
+<a href="{% url 'invoice:checkout' pk=invoice.pk %}">
      <button type="button" class="btn btn-success btn-xs">checkout</button></a>
-<a href="{% url 'invoice:save_pdf' %}">
-     <button type="button" class="btn btn-success btn-xs">save</button></a>
 </div>
 {% endblock %}

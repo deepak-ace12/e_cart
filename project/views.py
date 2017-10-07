@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Project, Item
+from invoice.models import Invoice
 
 
 def view_projects(request, pk=None):
@@ -17,6 +18,11 @@ def view_items(request, pk=None):
     else:
         items = request.project
     project = Project.objects.get(pk=pk)
-    args = {'items': items, 'project': project, }
+    invoice, created = Invoice.objects.get_or_create(
+        project_id=pk, customer_id=request.user.pk,
+        company=project.company
+    )
+
+    args = {'items': items, 'project': project, 'invoice': invoice }
     return render(request, 'project/items.html', args)
 
