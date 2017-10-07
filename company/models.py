@@ -16,14 +16,17 @@ class Company(models.Model):
         return self.company_name
 
 
-class UserProfile(models.Model):
+class AdminProfile(models.Model):
     user = models.OneToOneField(User)
-    company_name = models.ForeignKey(Company, null=True)
+    company = models.ForeignKey(Company, null=True)
+
+    def __str__(self):
+        return str(self.user)
 
 
 def create_profile(sender, **kwargs):
     if kwargs['created']:
-        user_profile = UserProfile.objects.create(user=kwargs['instance'])
+        user_profile = AdminProfile.objects.create(user=kwargs['instance'])
 
 post_save.connect(create_profile, sender=User)
 

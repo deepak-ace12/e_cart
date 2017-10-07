@@ -17,15 +17,14 @@ def cart(request, action, pk):
 
     item = Item.objects.get(pk=pk)
     if action == 'add':
-        Invoice.add_to_cart(item)
+        Invoice.add_to_cart(item, request.user)
     elif action == 'remove':
-        Invoice.remove_from_cart(item)
+        Invoice.remove_from_cart(item, request.user)
     items = Item.objects.filter(project_id=item.project.pk)
     invoice, created = Invoice.objects.get_or_create(
-        project_id=item.project.pk, customer=request.user,
+        project_id=item.project.pk, customer_id=request.user.pk,
         company=item.project.company
     )
-    invoice.customer = request.user
     carts = invoice.cart.all()
     project = Project.objects.get(pk=item.project.pk)
     args = {'items': items, 'carts': carts, 'project': project, }
@@ -34,7 +33,7 @@ def cart(request, action, pk):
 
 def checkout(request, pk=None):
     if pk:
-        invoice, created = Invoice.objects.get(project_id=pk)
+        invoice, created = Invoice.objects.get_or_create(project_id=pk, customer=request.user)
     else:
         invoice = request.invoice
     args = {'invoice': invoice, }

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+
+        <h1>Welcome {{ user.username }}</h1>
+        <p>
+            Please add the Company You belong to {{ user.pk }}
+        </p>
+        <a href="{% url 'company:update_admin' %}"><button type="button" class="btn btn-success btn-xs">
+            Add Company</button></a>
+
+    </div>
+{% endblock %}
