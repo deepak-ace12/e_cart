@@ -28,8 +28,6 @@ def view_invoice(request, pk=None):
     args = {'invoice': invoice, 'user': user, 'cart_info': cart_info,
             'adjustment': adjustment,
             }
-
-
     return render(request, 'invoice/invoice.html', args)
 
 
@@ -65,9 +63,14 @@ def generate_pdf(request, pk=None):
         invoice = Invoice.objects.get(pk=pk)
     else:
         invoice = request.invoice
+    user = AdminProfile.objects.get(user=request.user)
+    quantity = Quantity.objects.filter(invoice_id=pk)
+    adjustment = Adjustment.objects.get(invoice_id=pk)
+    cart_info = zip(invoice.cart.all(), quantity, range(len(quantity)))
     template = get_template('invoice/invoice.html')
     context = {
-        'invoice': invoice,
+        'invoice': invoice, 'user': user, 'cart_info': cart_info,
+        'adjustment': adjustment,
     }
     html = template.render(context)
     pdf = render_to_pdf('invoice/invoice.html', context)
@@ -83,43 +86,22 @@ def generate_pdf(request, pk=None):
     return HttpResponse("Not found")
 
 
-def save_pdf(request):
-
-    # Create the HttpResponse object with the appropriate PDF headers.
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-
-    # Create the PDF object, using the response object as its "file."
-    p = canvas.Canvas(response)
-
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(100, 100, "Hello world.")
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-    return response
-
-
 def save_qty(request, pk=None):
     invoice = Invoice.objects.get(pk=pk)
     carts = invoice.cart.all()
 
-    if request.method == 'POST':
-        for item in carts:
-            qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
-        form = QuantityForm(request.POST, instance=qty)
-        args = {'form': form, 'invoice': invoice}
-        if form.is_valid():
-            form.save()
-        return render(request, 'invoice/checkout.html', args)
-    else:
-        for item in carts:
-            qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
-        form = QuantityForm(instance=qty)
-        args = {'form': form, 'invoice': invoice}
-        return render(request, 'invoice/checkout.html', args)
+    for item in carts:
+        qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
+        if request.method == 'POST':
+            form = QuantityForm(request.POST, instance=qty)
+            args = {'form': form, 'invoice': invoice}
+            if form.is_valid():
+                form.save()
+            return render(request, 'invoice/checkout.html', args)
+        else:
+            form = QuantityForm(instance=qty)
+            args = {'form': form, 'invoice': invoice}
+            return render(request, 'invoice/checkout.html', args)
 
 
 def adjustment(request, pk=None):

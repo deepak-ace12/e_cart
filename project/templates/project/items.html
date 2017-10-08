@@ -27,6 +27,7 @@
      </div>
      {% endfor %}
 <a href="{% url 'invoice:checkout' pk=invoice.pk %}">
-     <button type="button" class="btn btn-success btn-xs">checkout</button></a>
+     <button type="button" class="btn btn-info btn-xs" style=" position: absolute; bottom: 10%; right : 50%">
+         Checkout</button></a>
 </div>
 {% endblock %}

@@ -23,7 +23,6 @@ table td{
                 <th>Item Name</th>
                 <th>Unit price</th>
                 <th>Qty</th>
-                <th>Total Price</th>
             </tr>
         </thead>
         {% for cart in invoice.cart.all %}
@@ -39,7 +38,7 @@ table td{
             {{ form.as_p }}
             <button class="btn btn-info btn-xs"  type="submit">Submit</button>
         </form></td>
-            <td>$200</td>
+
         </tr>
       {% endfor %}
 
