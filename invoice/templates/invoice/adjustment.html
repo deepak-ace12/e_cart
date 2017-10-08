@@ -2,13 +2,13 @@
 
 {% block body %}
     <div class="container">
-        <p>
+        <h2 style="color:grey; font-weight:bold; font-size:18px">
            Please add your previous adjustment here :
-        </p>
+        </h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Submit</button>
+            <button type="submit" class="btn btn-warning btn-xs">Submit</button>
         </form>
     </div>
 {% endblock %}

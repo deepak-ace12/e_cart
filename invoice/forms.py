@@ -10,7 +10,16 @@ class QuantityForm(forms.ModelForm):
 
 
 class AdjustmentForm(forms.ModelForm):
+    notes = forms.CharField(widget=forms.Textarea(
+        attrs={
+            'class': 'form-control',
+            'placeholder': "Add a Note",
+            'rows': 3,
+            'style': 'resize:none;',
+
+        }
+    ))
 
     class Meta:
         model = Adjustment
-        fields = ('amount',)
+        fields = ('amount', 'notes',)

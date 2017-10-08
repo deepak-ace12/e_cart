@@ -16,7 +16,7 @@ class Invoice(models.Model):
     cart = models.ManyToManyField(Item, related_name='cart')
     total = models.IntegerField(default=0, null=True)
     def __str__(self):
-        return str(self.customer)
+        return str(self.submitted)
 
     @classmethod
     def add_to_cart(cls, current_item, current_user):
@@ -43,4 +43,5 @@ class Quantity(models.Model):
 
 class Adjustment(models.Model):
     invoice = models.ForeignKey(Invoice, related_name='adj_invoice', null=True)
-    amount = models.IntegerField(default=0, null=True)
+    amount = models.IntegerField(default=0, null=True, blank=True)
+    notes = models.CharField(max_length=140, default='')

@@ -3,10 +3,10 @@
 {% block body %}
     <div class="container">
 
-        <h1>Welcome {{ user.username }}</h1>
-        <p>
-            Please add the Company You belong to {{ user.pk }}
-        </p>
+        <h1><b>Welcome</b></h1>
+        <h2 style="color:grey">
+            Please add the Company You belong to :
+        </h2>
         <a href="{% url 'company:update_admin' %}"><button type="button" class="btn btn-success btn-xs">
             Add Company</button></a>
 

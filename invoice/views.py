@@ -92,16 +92,16 @@ def save_qty(request, pk=None):
 
     for item in carts:
         qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
-        if request.method == 'POST':
-            form = QuantityForm(request.POST, instance=qty)
-            args = {'form': form, 'invoice': invoice}
-            if form.is_valid():
-                form.save()
-            return render(request, 'invoice/checkout.html', args)
-        else:
-            form = QuantityForm(instance=qty)
-            args = {'form': form, 'invoice': invoice}
-            return render(request, 'invoice/checkout.html', args)
+    if request.method == 'POST':
+        form = QuantityForm(request.POST, instance=qty)
+        args = {'form': form, 'invoice': invoice}
+        if form.is_valid():
+            form.save()
+        return render(request, 'invoice/checkout.html', args)
+    else:
+        form = QuantityForm(instance=qty)
+        args = {'form': form, 'invoice': invoice}
+        return render(request, 'invoice/checkout.html', args)
 
 
 def adjustment(request, pk=None):
@@ -113,7 +113,7 @@ def adjustment(request, pk=None):
 
     if request.method == 'POST':
         form = AdjustmentForm(request.POST, instance=amt)
-        args = {'form': form, 'invoice': invoice}
+        args = {'invoice': invoice}
         if form.is_valid():
             form.save()
         return render(request, 'invoice/checkout.html', args)

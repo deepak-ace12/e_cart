@@ -8,7 +8,8 @@ class Company(models.Model):
     company_name = models.CharField(max_length=100, default='')
     street = models.CharField(max_length=100, default='')
     city = models.CharField(max_length=20, default='')
-    state_code = models.CharField(max_length=5, default='')
+    state_code = models.CharField(max_length=2, default='')
+    zip = models.CharField(max_length=6, default='')
     contact = models.CharField(max_length=10, default='')
     image = models.ImageField(upload_to='company_logo', blank=True, null=True)
 

@@ -124,7 +124,8 @@
                             <td>
                                 <h3 style="color:#6D64E8">{{ invoice.company.company_name }}</h3>
                                 <h5>{{ invoice.company.street }}<br>
-                                {{ invoice.company.city}} &nbsp, {{ invoice.company.state_code}}<br>
+                                {{ invoice.company.city}} &nbsp,
+                                    {{ invoice.company.state_code}}-{{invoice.company.zip }}<br>
                                 {{ invoice.company.contact}} </h5>
                             </td>
                         </tr>
@@ -166,7 +167,7 @@
                             <th><b>Due Date</b></th>
                         </tr>
                         <tr>
-                            <td> {{ user.company.state_code}}</td>
+                            <td> {{ user.company.state_code}}-{{invoice.company.zip }}</td>
                             <td> {{ invoice.project.project_name}}</td>
                             <td> {{ invoice.due_date }}</td>
                         </tr>
@@ -210,8 +211,7 @@
                 <th><b>${{ invoice.total }}</b></th>
             </tr>
             <tr>
-                <td>&nbsp</td>
-                <td>&nbsp</td>
+                <td colspan="2">{{ adjustment.notes }}</td>
                 <th style="text-align:center">
                     Adjustment
                 </th>
@@ -228,7 +228,8 @@
                     function myFunction(p1, p2) {
                     return (p1 - p2);
                     }
-                    document.getElementById("total").innerHTML = "$"+myFunction({{ invoice.total }}, {{ adjustment.amount }});
+                    document.getElementById("total").innerHTML =
+                    "$"+myFunction({{ invoice.total }}, {{ adjustment.amount }});
                     </script>
                 </td>
 
