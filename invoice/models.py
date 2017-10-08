@@ -14,7 +14,7 @@ class Invoice(models.Model):
     submitted = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField(default=datetime.now().date()+timedelta(days=7))
     cart = models.ManyToManyField(Item, related_name='cart')
-
+    total = models.IntegerField(default=0, null=True)
     def __str__(self):
         return str(self.customer)
 
@@ -43,4 +43,4 @@ class Quantity(models.Model):
 
 class Adjustment(models.Model):
     invoice = models.ForeignKey(Invoice, related_name='adj_invoice', null=True)
-    amount = models.IntegerField(default=0)
+    amount = models.IntegerField(default=0, null=True)

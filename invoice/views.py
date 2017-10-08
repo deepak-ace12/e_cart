@@ -14,13 +14,22 @@ def view_invoice(request, pk=None):
         invoice = Invoice.objects.get(pk=pk)
     else:
         invoice = request.invoice
-    user = AdminProfile.objects.get(user=request.user)
-    quantity, created = Quantity.objects.get_or_create(invoice_id=pk)
-    adjustment = Adjustment.objects.get(invoice_id=pk)
 
-    args = {'invoice': invoice, 'user': user, 'quantity': quantity,
+    sum = 0
+    user = AdminProfile.objects.get(user=request.user)
+    quantity = Quantity.objects.filter(invoice_id=pk)
+    adjustment = Adjustment.objects.get(invoice_id=pk)
+    cart_info1 = zip(invoice.cart.all(), quantity)
+    cart_info = zip(invoice.cart.all(), quantity, range(len(quantity)))
+    for cart, qty in cart_info1:
+        sum = sum + (qty.quantity * cart.unit_price)
+    invoice.total = sum
+    invoice.save()
+    args = {'invoice': invoice, 'user': user, 'cart_info': cart_info,
             'adjustment': adjustment,
             }
+
+
     return render(request, 'invoice/invoice.html', args)
 
 
@@ -95,20 +104,19 @@ def save_pdf(request):
 
 def save_qty(request, pk=None):
     invoice = Invoice.objects.get(pk=pk)
-    if pk:
-        qty, created = Quantity.objects.get_or_create(invoice=invoice)
-    else:
-        qty = request.invoice
+    carts = invoice.cart.all()
 
     if request.method == 'POST':
+        for item in carts:
+            qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
         form = QuantityForm(request.POST, instance=qty)
         args = {'form': form, 'invoice': invoice}
         if form.is_valid():
             form.save()
         return render(request, 'invoice/checkout.html', args)
     else:
-        invoice = Invoice.objects.get(pk=pk)
-        qty, created = Quantity.objects.get_or_create(invoice=invoice)
+        for item in carts:
+            qty, created = Quantity.objects.get_or_create(invoice=invoice, item=item)
         form = QuantityForm(instance=qty)
         args = {'form': form, 'invoice': invoice}
         return render(request, 'invoice/checkout.html', args)

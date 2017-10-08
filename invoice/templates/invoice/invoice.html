@@ -174,56 +174,61 @@
                 </td>
             </tr>
         </table>
-        <table class="even-odd">
+        <table class="even-odd" id="items">
             <tr class="heading">
                 <th>Description </th>
                 <th> Qty</th>
                 <th> Unit Price</th>
                 <th>Total Price</th>
             </tr>
-            {% for cart in invoice.cart.all %}
+            <script>
+
+            </script>
+            {% for cart, qty, i in cart_info %}
+
             <tr class="item">
                 <td>{{cart.item_name}}</td>
-                <td>{{ quantity.quantity }}</td>
-                <td>{{cart.unit_price}}</td>
-                <td id="subtotal">
+                <td>{{ qty.quantity }}</td>
+                <td>${{cart.unit_price}}</td>
+                <td id="subtotal{{i}}">
                     <script>
-                    function myFunction(p1, p2) {
-                    return p1 * p2;
-                    }
-                    document.getElementById("subtotal").innerHTML
-                    = "$"+myFunction({{ quantity.quantity }}, {{cart.unit_price}});
+                        function myFunction(p1, p2){
+                        return p1 * p2;
+                        }
+                        document.getElementById("subtotal"+{{i}}).innerHTML
+                        = "$"+myFunction({{ qty.quantity }}, {{cart.unit_price}})
                     </script>
                 </td>
             </tr>
+
             {% endfor %}
         </table>
         <table>
 			<tr class="heading">
                 <th style="color:grey" colspan="2">Notes</th>
                 <th style="text-align:center">Subtotal</th>
-                <th>$500</th>
+                <th><b>${{ invoice.total }}</b></th>
             </tr>
             <tr>
                 <td>&nbsp</td>
                 <td>&nbsp</td>
-                <td style="text-align:center">
+                <th style="text-align:center">
                     Adjustment
-                </td>
-                <td>-${{ adjustment.amount }}</td>
+                </th>
+                <th>-${{ adjustment.amount }}</th>
             </tr>
             <tr>
                 <td>&nbsp</td>
                 <td>&nbsp</td>
                 <td style="text-align:center">
-                    Total
+
                 </td>
-                <td id="total">$
+                <td style="color:#E01B84; font-size:25px; font-weight:bold" id="total">$
                  <script>
                     function myFunction(p1, p2) {
                     return (p1 - p2);
                     }
-                    document.getElementById("total").innerHTML = "$"+myFunction(500, {{ adjustment.amount }});
+                    document.getElementById("total").innerHTML = "$"+myFunction({{ invoice.total }}, {{ adjustment.amount }});
                     </script>
                 </td>
 
