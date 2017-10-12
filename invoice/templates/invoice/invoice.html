@@ -125,7 +125,7 @@
                                 <h3 style="color:#6D64E8">{{ invoice.company.company_name }}</h3>
                                 <h5>{{ invoice.company.street }}<br>
                                 {{ invoice.company.city}} &nbsp,
-                                    {{ invoice.company.state_code}}-{{invoice.company.zip }}<br>
+                                {{ invoice.company.state_code}}-{{invoice.company.zip }}<br>
                                 {{ invoice.company.contact}} </h5>
                             </td>
                         </tr>
@@ -252,7 +252,7 @@ function doit(){
 <div align="center">
 <a href="javascript:doit()"><button type="button" class="btn btn-success btn-xs">Print</button></a>
 <a href="{% url 'invoice:save_pdf' pk=invoice.pk %}">
-     <button type="button" class="btn btn-success btn-xs">save</button></a>
+     <button type="button" class="btn btn-success btn-xs">Save</button></a>
 </div>
 
 </body>

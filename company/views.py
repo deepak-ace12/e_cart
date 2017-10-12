@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from .models import Company, AdminProfile
 from .forms import RegistrationForm, AdminUpdateForm
-# Create your views here.
 
 
 def view_companies(request):
@@ -22,7 +21,7 @@ def choose_companies(request):
 
 
 def register(request):
-    if request.method =='POST':
+    if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -46,4 +45,3 @@ def update_admin(request):
         form = AdminUpdateForm(instance=user)
         args = {'form': form}
         return render(request, 'company/update_admin.html', args)
-

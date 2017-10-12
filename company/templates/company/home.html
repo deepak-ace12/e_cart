@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container" >
      {% for company in companies %}
-    <div class="col-md-4" align="middle">
+        <div class="col-md-4" align="middle">
 
         {% if company.image %}
         <img src="{{ company.image.url }}"   align="middle" class="img-round"
@@ -14,7 +14,7 @@
         {% endif %}
 
 
-    </div>
+        </div>
     {% endfor %}
 </div>
 {% endblock %}
